@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  alpha_postgres:
+    # 官方推荐：集成了 pgvector 向量插件的 Postgres 16 镜像
+    image: pgvector/pgvector:pg16
+    container_name: alpha_agent_postgres
+    environment:
+      POSTGRES_USER: alpha_user
+      POSTGRES_PASSWORD: alpha_password_2026
+      POSTGRES_DB: alpha_rag_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:

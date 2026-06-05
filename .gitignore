@@ -1,0 +1,22 @@
+# 卡死密钥和本地配置
+.env
+.env.local
+*.env
+
+# Python 编译缓存与虚拟环境
+__pycache__/
+*.pyc
+.pytest_cache/
+.poetry/
+.venv/
+venv/
+.conda/
+
+# IDE 与系统缓存
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 忽略本地的练习文件夹
+src/alpha_agent/
