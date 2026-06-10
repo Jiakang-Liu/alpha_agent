@@ -1,7 +1,7 @@
 import os
 from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
-from .state import AgentState
+from .states import AgentState
 from .main_rag import query_vector_db, get_embedding
 
 # Define a strict execution schema using Pydantic for OpenAI Strcutured Outputs
