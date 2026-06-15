@@ -22,4 +22,4 @@ Thumbs.db
 src/alpha_agent/
 
 # 忽略docker开发配置
-.docker-compose.override.yml
+docker-compose.override.yml
