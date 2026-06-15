@@ -1,6 +1,6 @@
 import re
 from typing import List
-from datetime import detetime, timezone
+from datetime import datetime, timezone
 
 class SECOmfgChunk:
     """
