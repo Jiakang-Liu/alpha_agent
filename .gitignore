@@ -20,3 +20,6 @@ Thumbs.db
 
 # 忽略本地的练习文件夹
 src/alpha_agent/
+
+# 忽略docker开发配置
+.docker-compose.override.yml

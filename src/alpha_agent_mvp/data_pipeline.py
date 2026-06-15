@@ -3,8 +3,11 @@ import asyncio
 from datetime import datetime, timezone
 import yfinance as yf
 from openai import AsyncOpenAI
-# Placeholder for your production SQLAlchemy or Tortoise engine setup
-# from sqlalchemy import create_backend_engine 
+from dotenv import load_dotenv
+import psycopg
+
+# load env
+load_dotenv()
 
 # 1. Domain Object: Enforcing Data Ingestion Contracts
 class FinancialChunk:
