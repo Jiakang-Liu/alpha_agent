@@ -1,16 +1,27 @@
 services:
   alpha_postgres:
     image: pgvector/pgvector:pg16
-    container_name: alpha_agent_postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    container_name: alpha_agent_postgres_container
     ports:
-      - "5432:5432"
+      - "5432:5432"  # 💥 核心死命令：把对外物理端口改成 5433！彻底避开本地 5432 物理冲突！
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-alpha_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-alpha_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-alpha_rag_db}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - alpha_agent_pgdata:/var/lib/postgresql/data
     restart: always
 
+  adminer:
+    image: adminer:latest
+    container_name: alpha_adminer_gateway
+    environment:
+      ADMINER_DEFAULT_SERVER: alpha_postgres
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - alpha_postgres
+
 volumes:
-  postgres_data:
+  alpha_agent_pgdata:
