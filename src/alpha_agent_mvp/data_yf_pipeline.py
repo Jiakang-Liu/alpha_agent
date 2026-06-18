@@ -6,8 +6,18 @@ from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import psycopg
 
-# load env
+# Load runtime environment configurations
 load_dotenv()
+
+# Configure targets - fallback to local Docker container cluster if variable is unset
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    pg_pass = os.getenv("POSTGRES_PASSWORD", "postgres")
+    DATABASE_URL = f"postgresql://alpha_user:{pg_pass}@localhost:5432/alpha_agent"
+
+if "+asyncpg" in DATABASE_URL:
+    DATABASE_URL = DATABASE_URL.replace("+asyncpg", "")
+
 
 # 1. Domain Object: Enforcing Data Ingestion Contracts
 class FinancialChunk:
@@ -15,13 +25,14 @@ class FinancialChunk:
     Represents a structured, atomic unit of financial intelligence 
     decorated with critical business metadata for advanced RAG filtering.
     """
-    def __init__(self, company: str, fiscal_year: int, statement_type: str, content: str):
-        self.company = company               # e.g., "TSLA"
+    def __init__(self, ticker: str, fiscal_year: int, doc_type: str, content: str):
+        self.ticker = ticker                 # e.g., "TSLA"
         self.fiscal_year = fiscal_year       # e.g., 2026
-        self.statement_type = statement_type # e.g., "Balance_Sheet" or "Cash_Flow"
+        self.doc_type = doc_type             # e.g., "Balance_Sheet" or "Cash_Flow"
         self.content = content               # High-density serialized text representation
-        # Compliant with Python 3.11+ timezone-aware standards (Deprecating utcnow)
+        # Compliant with Python 3.11+ timezone-aware standards
         self.created_at = datetime.now(timezone.utc).isoformat()
+
 
 # 2. Concurrency Engine: Asynchronous Telemetry Ingestion Pipeline
 async def fetch_ticker_financials(ticker_symbol: str) -> list[FinancialChunk]:
@@ -33,8 +44,7 @@ async def fetch_ticker_financials(ticker_symbol: str) -> list[FinancialChunk]:
     
     loop = asyncio.get_running_loop()
     
-    # Execution Closure: Instantiate Ticker inside the thread to guarantee thread-safety.
-    # Offload the blocking CPU/Network tasks to the default ThreadPoolExecutor (None).
+    # Thread-safe execution closure for blocking I/O bound requests
     def get_financial_statements(symbol: str):
         ticker = yf.Ticker(symbol)
         return ticker.balance_sheet, ticker.cashflow
@@ -51,36 +61,35 @@ async def fetch_ticker_financials(ticker_symbol: str) -> list[FinancialChunk]:
     
     # ---- Pipeline Stage A: Balance Sheet Serialization & Token Optimization ----
     if balance_sheet is not None and not balance_sheet.empty:
-        # Extract the most recent fiscal column to eliminate stale data noise
         latest_bs = balance_sheet.iloc[:, 0] 
         bs_content = f"--- [{ticker_symbol} Fiscal Year {current_year} Balance Sheet Snapshot] ---\n"
         for idx, val in latest_bs.items():
             bs_content += f"{idx}: {val}\n"
             
         chunks.append(FinancialChunk(
-            company=ticker_symbol,
+            ticker=ticker_symbol,
             fiscal_year=current_year,
-            statement_type="Balance_Sheet",
+            doc_type="Balance_Sheet",
             content=bs_content
         ))
 
     # ---- Pipeline Stage B: Cash Flow Statement Extraction ----
     if cash_flow is not None and not cash_flow.empty:
-        # Extract the most recent cash flow metrics (Critical for Free Cash Flow & CapEx audits)
         latest_cf = cash_flow.iloc[:, 0]
         cf_content = f"--- [{ticker_symbol} Fiscal Year {current_year} Cash Flow Snapshot] ---\n"
         for idx, val in latest_cf.items():
             cf_content += f"{idx}: {val}\n"
             
         chunks.append(FinancialChunk(
-            company=ticker_symbol,
+            ticker=ticker_symbol,
             fiscal_year=current_year,
-            statement_type="Cash_Flow",
+            doc_type="Cash_Flow",
             content=cf_content
         ))
         
     print(f"✅ [Data Pipeline]: Successfully converted '{ticker_symbol}' data into {len(chunks)} high-density chunks.")
     return chunks
+
 
 # 3. Vector Database Layer: Batch Embedding & Idempotent Upsert Transaction
 async def upsert_chunks_to_postgres(chunks: list[FinancialChunk]):
@@ -103,22 +112,32 @@ async def upsert_chunks_to_postgres(chunks: list[FinancialChunk]):
         input=texts_to_embed
     )
     
-    print(f"💾 [PostgreSQL Cluster]: Executing incremental Upsert transaction...")
+    print(f"💾 [PostgreSQL Cluster]: Executing incremental Upsert transaction via Async connection...")
     
-    # Architectural Blueprint for production SQL generation
-    # In a real database implementation, you would execute:
-    # """
-    # INSERT INTO financial_knowledge_base (company, fiscal_year, statement_type, content, embedding)
-    # VALUES (%s, %s, %s, %s, %s)
-    # ON CONFLICT (company, fiscal_year, statement_type) 
-    # DO UPDATE SET content = EXCLUDED.content, embedding = EXCLUDED.embedding;
-    # """
-    for idx, chunk in enumerate(chunks):
-        vector = response.data[idx].embedding
-        # Emulating successful commit log with strict Metadata Gateway tags
-        print(f"    └─ [UPSERT SUCCESS] | Company: {chunk.company} | Type: {chunk.statement_type:<13} | Year: {chunk.fiscal_year} | Dim: {len(vector)}")
-        
-    print("🎯 [PostgreSQL Cluster]: Transaction committed successfully. Knowledge database base upgraded.\n")
+    # Establish fully async asynchronous connection and cursor contexts
+    async with await psycopg.AsyncConnection.connect(DATABASE_URL) as battlefield_conn:
+        async with battlefield_conn.cursor() as cur:
+            for idx, chunk in enumerate(chunks):
+                vector = response.data[idx].embedding
+                
+                # Execute production-grade atomic Upsert logic
+                await cur.execute("""
+                    INSERT INTO financial_knowledge_base (ticker, fiscal_year, doc_type, content, embedding)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (ticker, fiscal_year, doc_type) 
+                    DO UPDATE SET 
+                        content = EXCLUDED.content, 
+                        embedding = EXCLUDED.embedding,
+                        created_at = CURRENT_TIMESTAMP;
+                """, (chunk.ticker, chunk.fiscal_year, chunk.doc_type, chunk.content, vector))
+                
+                print(f"    └─ [UPSERT SUCCESS] | Ticker: {chunk.ticker} | Type: {chunk.doc_type:<13} | Year: {chunk.fiscal_year}")
+            
+            # Commit the atomic transaction after loop completion inside cursor context
+            await battlefield_conn.commit()
+            
+    print("🎯 [PostgreSQL Cluster]: Transaction committed successfully.\n")
+
 
 # 4. Master Orchestration Entry Point
 async def main():
@@ -139,6 +158,15 @@ async def main():
     # Trigger vector database atomic storage operation
     await upsert_chunks_to_postgres(all_chunks)
 
+
 if __name__ == "__main__":
-    # Ensure correct runtime execution context
-    asyncio.run(main())
+    import sys
+    import asyncio
+
+    # 🛡️ Windows 环境下的高性能 psycopg 异步兼容性补丁
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        print("🪟 [Windows OS Patch]: 已成功将 asyncio 事件循环策略强制切换为 WindowsSelectorEventLoopPolicy")
+
+    # 原本的触发运行入口
+    asyncio.run(run_e2e_integration_test())
