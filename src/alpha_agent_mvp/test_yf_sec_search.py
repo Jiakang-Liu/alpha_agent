@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 from sqlalchemy import text
 
 # 导入你编写的四大工业级模块
-from src.alpha_agent_mvp.data_pipeline import fetch_ticker_financials, upsert_chunks_to_postgres
-from src.alpha_agent_mvp.sec_pipeline import SECDataPipeline
+from src.alpha_agent_mvp.data_yf_pipeline import fetch_ticker_financials, upsert_chunks_to_postgres
+from src.alpha_agent_mvp.data_sec_pipeline import SECDataPipeline
 from src.alpha_agent_mvp.search_engine import AlphaHybridSearchEngine
 
 load_dotenv()
@@ -42,7 +42,7 @@ async def run_e2e_integration_test():
     
     # 0. 初始化核心组件与基础设施
     # 保持多租户隔离原则，选择一家代表性公司作为穿透测试对象（例如：特斯拉 TSLA）
-    test_ticker = "TSLA"
+    test_ticker = "NVDA"
     search_engine = AlphaHybridSearchEngine()
     sec_pipeline = SECDataPipeline()
     openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))

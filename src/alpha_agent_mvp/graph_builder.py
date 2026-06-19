@@ -1,7 +1,7 @@
 import asyncio
 from langgraph.graph import StateGraph, END
 from .states import AgentState
-from .nodes import supervisor_node, data_agent_node, analyst_agent_node
+from .nodes import supervisor_node, data_agent_node, analyst_agent_node, critic_node
 
 def router_logic(state: AgentState) -> str:
     """
@@ -9,7 +9,16 @@ def router_logic(state: AgentState) -> str:
     Parses the directive injected into 'critique' by the Supervisor Node,
     and returns the exact physical edge name for LangGraph routing.
     """
-    directive = state.get("critique","")
+    # get state data
+    directive = state.get("next_action","").lower()
+    ccurrent_count = state.get("critique_count", 0)
+
+    # prevent infinite loop
+    if ccurrent_count >= 1 and "data_agent" in directive:
+        # 如果你希望严格限制挂科后的重试，这里可以硬拉闸
+        print("\n🚨 [LangGraph 拓扑护栏激活]: 检测到审计挂科后 Supervisor 企图无限空转 data_agent！")
+        print(" └─ [战略导向]: 强行终止数据压榨，逼迫图流转至 'analyst_agent' 消化现有残缺数据。")
+        return "analyst_agent" # 物理重定向，打破双向锁死
 
     if "data_agent" in directive:
         return "data_agent"
@@ -30,13 +39,15 @@ def build_alpha_graph():
     workflow.add_node("supervisor",supervisor_node)
     workflow.add_node("data_agent",data_agent_node)
     workflow.add_node("analyst_agent",analyst_agent_node)
+    workflow.add_node("critic",critic_node)
 
     # 3. Establish the starting checkpoint of execution
     workflow.set_entry_point("supervisor")
 
     # 4. Standard linear edges (Once workers finish, they MUST report back to the Supervisor)
     workflow.add_edge("data_agent", "supervisor")
-    workflow.add_edge("analyst_agent", "supervisor")
+    workflow.add_edge("analyst_agent", "critic")
+    workflow.add_edge("critic", "supervisor")
     
     # 5. Wire up the critical Conditional Edge from the Supervisor Node
     # The graph will invoke 'router_logic' to decide the path on the fly

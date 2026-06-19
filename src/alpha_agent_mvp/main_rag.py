@@ -40,7 +40,7 @@ async def query_vector_db(embedding: list[float], top_k: int = 3) -> list[str]:
     async with conn:
         async with conn.cursor() as cur:
             # Leverage the pgvector cosine similarity operator `<=>` combined with an HNSW index for ultra-fast retrieval.
-            sql = "SELECT content FROM stock_knowledge ORDER BY embedding <=> %s::vector LIMIT %s;"
+            sql = "SELECT content FROM financial_knowledge_base ORDER BY embedding <=> %s::vector LIMIT %s;"
             await cur.execute(sql, (str(embedding), top_k))
             rows = await cur.fetchall()
             return [row[0] for row in rows]

@@ -1,7 +1,7 @@
 import asyncio
 import os
 from dotenv import load_dotenv
-from src.alpha_agent_mvp.data_pipeline import fetch_ticker_financials, upsert_chunks_to_postgres, FinancialChunk
+from src.alpha_agent_mvp.data_yf_pipeline import fetch_ticker_financials, upsert_chunks_to_postgres, FinancialChunk
 from src.alpha_agent_mvp.sec_chunker import AdvancedSECChunker
 
 # koad local env 

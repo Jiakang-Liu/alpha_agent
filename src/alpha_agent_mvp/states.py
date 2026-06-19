@@ -3,10 +3,20 @@ import operator
 
 def append_reducer(left: list, right: list) -> list:
     """
-    A custom reducer to cleanly append new fetched data pieces
-    instead of overwriting the previous state.
+    An incremental Reducer with physical deduplication capabilities, 
+    preventing identical data from endlessly accumulating across multiple 
+    error-correction cycles and overwhelming the context window.
     """
-    return left + right
+    if not left:
+        return right
+    if not right:
+        return left
+        
+    # Perform deduplication and stitching based on the content or hash of the `content`.
+    seen_contents = {chunk['content'] for chunk in left}
+    new_chunks = [chunk for chunk in right if chunk['content'] not in seen_contents]
+    
+    return left + new_chunks
 
 class AgentState(TypedDict):
     """
@@ -30,3 +40,6 @@ class AgentState(TypedDict):
 
     # Circuit breaker counter to prevent infinite token-burning loops
     critique_count: int
+
+    # Next action depending on Supervisor Node
+    next_action: str
