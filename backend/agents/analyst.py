@@ -25,4 +25,16 @@ async def analyst_agent_node(state: AgentState) -> dict:
 
     print("✅ [Analyst Agent Node]: Financial report draft successfully compiled.\n")
 
-    return {"financial_report": report_draft}
+    return {
+        "financial_report": report_draft,
+        "events": [
+            {
+                "type": "node_log",
+                "message": "Financial report draft successfully compiled."
+            },
+            {
+                "type": "report_generated",
+                "content": report_draft
+            }
+        ]
+    }

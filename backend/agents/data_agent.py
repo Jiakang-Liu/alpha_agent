@@ -21,7 +21,7 @@ async def data_agent_node(state: AgentState) -> dict:
     search_engine = AlphaHybridSearchEngine()
 
     try:
-        await ensure_ticker_data_cached(search_engine, ticker)
+        await ensure_ticker_data_cached(ticker)
 
         query_vector = await create_query_embedding(user_query)
 
@@ -32,9 +32,17 @@ async def data_agent_node(state: AgentState) -> dict:
             query_vector=query_vector,
         )
 
+        raw_data = format_raw_data(hit_records)
+
         return {
-            "raw_data": format_raw_data(hit_records),
+            "raw_data": raw_data,
             "critique": "",
+            "events": [
+                {
+                    "type": "node_log",
+                    "message": f"Retrieved {len(hit_records)} relevant data chunks for {ticker}.",
+                }
+            ],
         }
 
     except Exception as e:

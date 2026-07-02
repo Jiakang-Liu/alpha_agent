@@ -1,5 +1,6 @@
 import httpx
 from typing import Optional
+
 from .db import get_connection
 
 
@@ -17,7 +18,7 @@ class CIKRepository:
         sql = """
         CREATE TABLE IF NOT EXISTS ticker_cik_mapping (
             ticker VARCHAR(20) PRIMARY KEY,
-            cik VARCHAR(10) NOT NULL UNIQUE,
+            cik VARCHAR(10) NOT NULL,
             company_name TEXT NOT NULL,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
@@ -40,15 +41,11 @@ class CIKRepository:
 
         records = []
         for item in raw_data.values():
-            cik = str(item["cik_str"]).zfill(10)
-            ticker = item["ticker"].upper()
-            company_name = item["title"]
-
             records.append(
                 {
-                    "ticker": ticker,
-                    "cik": cik,
-                    "company_name": company_name,
+                    "ticker": item["ticker"].upper(),
+                    "cik": str(item["cik_str"]).zfill(10),
+                    "company_name": item["title"],
                 }
             )
 

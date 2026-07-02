@@ -56,9 +56,14 @@ async def run_audit(
 
 def build_pass_result() -> dict:
     return {
-        "critique": "PASSED",
+        "critique": "",
+        "events": [
+            {
+                "type": "node_log",
+                "message": "Audit passed. Report approved."
+            }
+        ]
     }
-
 
 def build_reject_result(
     feedback: str,

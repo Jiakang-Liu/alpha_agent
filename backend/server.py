@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
 
-from .previous_files.graph_builder import build_alpha_graph
+from backend.graph import build_alpha_graph
 
 from backend.infrastructure import (
     open_db_pool,
@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
     await schema_initializer.initialize()
 
     cik_repository = CIKRepository()
-    await cik_repository.initialize()
+    await cik_repository.ensure_table_exists()
 
     yield
 
@@ -51,6 +51,9 @@ class AnalyzeRequest(BaseModel):
 # building graph
 alpha_graph = build_alpha_graph()
 
+# event interpreter
+def sse_event(data: dict) -> str:
+    return f"data: {json.dumps(data, ensure_ascii=False, default=str)}\n\n"
 
 @app.post("/api/analyze")
 async def analyze_ticker_stream(payload: AnalyzeRequest, request: Request):
@@ -65,31 +68,41 @@ async def analyze_ticker_stream(payload: AnalyzeRequest, request: Request):
             "financial_report": "",
             "critique": "",
             "critique_count": 0,
-            "next_action": ""
+            "next_action": "",
+            "events": [],
         }
 
         try:
-            yield f"data: {json.dumps({'type': 'graph_start', 'ticker': payload.ticker.upper()})}\n\n"
-
+            yield sse_event({
+                "type": "graph_start",
+                "message": "AlphaAgent graph started.",
+            })
             async for event in alpha_graph.astream(initial_state):
                 if await request.is_disconnected():
                     print("Client disconnected.")
                     break
 
                 for node_name, output in event.items():
-                    yield f"data: {json.dumps({'type': 'node_end', 'node': node_name})}\n\n"
+                    yield sse_event({
+                        "type": "node_start",
+                        "node": node_name,
+                    })
 
-                    if output.get("raw_data"):
-                        yield f"data: {json.dumps({'type': 'node_log', 'message': 'Market data loaded.'})}\n\n"
+                    for agent_event in output.get("events", []):
+                        yield sse_event({
+                            **agent_event,
+                            "node": node_name,
+                        })
 
-                    if output.get("financial_report"):
-                        yield f"data: {json.dumps({'type': 'token', 'content': output['financial_report']})}\n\n"
+                    yield sse_event({
+                        "type": "node_end",
+                        "node": node_name,
+                    })
 
-                    if output.get("critique"):
-                        yield f"data: {json.dumps({'type': 'node_log', 'message': output['critique']})}\n\n"
-
-            yield f"data: {json.dumps({'type': 'graph_end', 'status': 'FINISH'})}\n\n"
-
+            yield sse_event({
+                "type": "graph_end",
+                "message": "AlphaAgent graph finished.",
+            })
         except Exception as e:
             yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
 

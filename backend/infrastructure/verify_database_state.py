@@ -1,10 +1,18 @@
 from .db import get_connection
-from sqlalchemy import text
 
-async def verify_database_state( ticker: str) -> int:
+
+async def verify_database_state(ticker: str) -> int:
+    print("----[Data Agent]: Verify database state")
+
+    sql = """
+    SELECT COUNT(*)
+    FROM financial_knowledge_base
+    WHERE ticker = %s;
+    """
+
     async with get_connection() as conn:
-        result = await conn.execute(
-            text("SELECT COUNT(*) FROM financial_knowledge_base WHERE ticker = :ticker"),
-            {"ticker": ticker}
-        )
-        return result.scalar()
+        async with conn.cursor() as cur:
+            await cur.execute(sql, (ticker,))
+            row = await cur.fetchone()
+
+    return row[0] if row else 0

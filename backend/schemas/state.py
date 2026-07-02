@@ -1,4 +1,4 @@
-from typing import TypedDict, Annotated, Sequence
+from typing import TypedDict, Annotated, Sequence, List, Dict, Any
 import operator
 
 def append_reducer(left: list, right: list) -> list:
@@ -43,3 +43,6 @@ class AgentState(TypedDict):
 
     # Next action depending on Supervisor Node
     next_action: str
+
+    # Event shows in frontend
+    events: List[Dict[str, Any]]
