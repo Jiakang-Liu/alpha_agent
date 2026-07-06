@@ -1,8 +1,6 @@
-# backend/services/critic_service.py
-
 from pydantic import BaseModel, Field
 from langchain_openai import ChatOpenAI
-
+from backend.events import NODE_LOG
 
 class AuditResult(BaseModel):
     is_valid: bool = Field(
@@ -59,7 +57,7 @@ def build_pass_result() -> dict:
         "critique": "",
         "events": [
             {
-                "type": "node_log",
+                "type": NODE_LOG,
                 "message": "Audit passed. Report approved."
             }
         ]

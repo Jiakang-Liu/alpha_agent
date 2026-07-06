@@ -2,12 +2,14 @@ from backend.infrastructure.db import get_connection
 
 
 TARGET_TABLE = "financial_knowledge_base"
+ANALYSIS_RUNS_TABLE = "analysis_runs"
 
 
 class SchemaInitializer:
     async def initialize(self) -> None:
         await self.create_extensions()
         await self.create_financial_knowledge_base()
+        await self.create_analysis_runs()
         await self.create_indexes()
 
     async def create_extensions(self) -> None:
@@ -28,6 +30,33 @@ class SchemaInitializer:
                 content TEXT NOT NULL,
                 embedding vector(1536) NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+        """
+
+        async with get_connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql)
+            await conn.commit()
+
+    async def create_analysis_runs(self) -> None:
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {ANALYSIS_RUNS_TABLE} (
+                run_id UUID PRIMARY KEY,
+                ticker TEXT NOT NULL,
+                user_query TEXT NOT NULL,
+
+                status TEXT NOT NULL,
+                current_node TEXT,
+
+                final_report TEXT,
+                error_message TEXT,
+
+                started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                finished_at TIMESTAMPTZ,
+                duration_ms INTEGER,
+
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
         """
 

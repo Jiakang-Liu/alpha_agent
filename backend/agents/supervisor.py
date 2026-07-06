@@ -1,4 +1,5 @@
 from backend.schemas import AgentState
+from backend.events import NODE_LOG
 
 
 async def supervisor_node(state: AgentState) -> dict:
@@ -34,11 +35,11 @@ async def supervisor_node(state: AgentState) -> dict:
         "next_action": next_action,
         "events": [
             {
-                "type": "node_log",
+                "type": NODE_LOG,
                 "message": f"Supervisor decided next step: {next_action}",
             },
             {
-                "type": "node_log",
+                "type": NODE_LOG,
                 "message": reasoning,
             },
         ],

@@ -8,7 +8,7 @@ from backend.services import (
     retrieve_relevant_chunks,
     format_raw_data,
 )
-
+from backend.events import NODE_LOG
 
 async def data_agent_node(state: AgentState) -> dict:
     print("[Data Agent Node]: Starting real data retrieval pipeline...")
@@ -39,7 +39,7 @@ async def data_agent_node(state: AgentState) -> dict:
             "critique": "",
             "events": [
                 {
-                    "type": "node_log",
+                    "type": NODE_LOG,
                     "message": f"Retrieved {len(hit_records)} relevant data chunks for {ticker}.",
                 }
             ],

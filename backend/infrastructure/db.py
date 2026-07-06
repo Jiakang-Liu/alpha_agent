@@ -1,6 +1,6 @@
 import os
-from psycopg_pool import AsyncConnectionPool
 from dotenv import load_dotenv
+from psycopg_pool import AsyncConnectionPool
 
 load_dotenv()
 
@@ -18,21 +18,47 @@ conninfo = (
     f"port={DB_PORT}"
 )
 
-db_pool = AsyncConnectionPool(
-    conninfo=conninfo,
-    min_size=1,
-    max_size=10,
-    open=False,
-)
+db_pool: AsyncConnectionPool | None = None
+
+
+def create_db_pool() -> AsyncConnectionPool:
+    return AsyncConnectionPool(
+        conninfo=conninfo,
+        min_size=1,
+        max_size=10,
+        open=False,
+    )
 
 
 async def open_db_pool():
+    global db_pool
+
+    if db_pool is not None and not db_pool.closed:
+        print("[DB] pool already open", flush=True)
+        return
+
+    db_pool = create_db_pool()
     await db_pool.open()
+
+    print("[DB] pool opened", flush=True)
 
 
 async def close_db_pool():
-    await db_pool.close()
+    global db_pool
+
+    if db_pool is None:
+        print("[DB] pool already None", flush=True)
+        return
+
+    if not db_pool.closed:
+        await db_pool.close()
+        print("[DB] pool closed", flush=True)
+
+    db_pool = None
 
 
 def get_connection():
+    if db_pool is None or db_pool.closed:
+        raise RuntimeError("Database pool is not open.")
+
     return db_pool.connection()

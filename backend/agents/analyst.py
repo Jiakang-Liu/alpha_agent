@@ -5,7 +5,7 @@ from backend.services.analyst_service import (
     build_analyst_user_instruction,
     create_financial_report,
 )
-
+from backend.events import NODE_LOG, REPORT_GENERATED
 
 async def analyst_agent_node(state: AgentState) -> dict:
     print("📊 [Analyst Agent Node]: Compiling gathered intelligence into official prospectus report...")
@@ -29,11 +29,11 @@ async def analyst_agent_node(state: AgentState) -> dict:
         "financial_report": report_draft,
         "events": [
             {
-                "type": "node_log",
+                "type": NODE_LOG,
                 "message": "Financial report draft successfully compiled."
             },
             {
-                "type": "report_generated",
+                "type": REPORT_GENERATED,
                 "content": report_draft
             }
         ]

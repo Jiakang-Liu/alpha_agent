@@ -67,7 +67,7 @@ export function useSSEStream() {
             setLogs((prev) => [...prev, event.message]);
           }
 
-          if (event.type === "token") {
+          if (event.type === "report_generated") {
             setReport((prev) => prev + event.content);
           }
 

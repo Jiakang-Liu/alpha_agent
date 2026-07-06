@@ -5,6 +5,7 @@ from .verify_database_state import verify_database_state
 from .search_engine import AlphaHybridSearchEngine
 from .cik_repository import CIKRepository
 from .schema_initializer import SchemaInitializer
+from .analysis_run_repository import AnalysisRunRepository
 
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "AlphaHybridSearchEngine",
     "CIKRepository",
     "SchemaInitializer",
+    "AnalysisRunRepository",
 ]

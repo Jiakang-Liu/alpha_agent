@@ -5,7 +5,7 @@ from backend.services.critic_service import (
     build_pass_result,
     build_reject_result,
 )
-
+from backend.events import NODE_LOG
 
 async def critic_node(state: AgentState) -> dict:
     print("🛡️ [Critic Node]: Chief Audit Officer activated.")
@@ -50,7 +50,7 @@ async def critic_node(state: AgentState) -> dict:
             ),
             "events": [
                 {
-                    "type": "node_log",
+                    "type": NODE_LOG,
                     "message": f"Audit rejected: {audit_result.feedback}"
                 }
             ]
