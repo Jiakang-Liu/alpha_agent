@@ -121,3 +121,62 @@ class AnalysisRunRepository:
                     ),
                 )
             await conn.commit()
+    async def list_runs(
+        self,
+        limit: int = 20,
+    ) -> list[dict]:
+        sql = """
+            SELECT
+                run_id,
+                ticker,
+                user_query,
+                status,
+                current_node,
+                error_message,
+                started_at,
+                finished_at,
+                duration_ms,
+                created_at,
+                updated_at
+            FROM analysis_runs
+            ORDER BY created_at DESC
+            LIMIT %s
+        """
+
+        async with get_connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, (limit,))
+                rows = await cur.fetchall()
+
+        return [
+            {
+                "run_id": str(row[0]),
+                "ticker": row[1],
+                "user_query": row[2],
+                "status": row[3],
+                "current_node": row[4],
+                "error_message": row[5],
+                "started_at": (
+                    row[6].isoformat()
+                    if row[6]
+                    else None
+                ),
+                "finished_at": (
+                    row[7].isoformat()
+                    if row[7]
+                    else None
+                ),
+                "duration_ms": row[8],
+                "created_at": (
+                    row[9].isoformat()
+                    if row[9]
+                    else None
+                ),
+                "updated_at": (
+                    row[10].isoformat()
+                    if row[10]
+                    else None
+                ),
+            }
+            for row in rows
+        ]

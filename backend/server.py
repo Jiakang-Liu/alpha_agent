@@ -218,3 +218,13 @@ async def analyze_ticker_stream(payload: AnalyzeRequest, request: Request):
             "X-Accel-Buffering": "no",
         },
     )
+
+@app.get("/api/analysis-runs")
+async def list_analysis_runs(limit: int = 20):
+    repo = AnalysisRunRepository()
+
+    runs = await repo.list_runs(limit=limit)
+
+    return {
+        "runs": runs
+    }
