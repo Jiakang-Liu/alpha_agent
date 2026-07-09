@@ -9,7 +9,10 @@ from backend.services import (
     format_raw_data,
 )
 from backend.events import NODE_LOG
+from langsmith import traceable
 
+
+@traceable(name="Data Agent Node")
 async def data_agent_node(state: AgentState) -> dict:
     print("[Data Agent Node]: Starting real data retrieval pipeline...")
 

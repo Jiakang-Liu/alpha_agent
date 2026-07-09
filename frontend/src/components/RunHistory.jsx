@@ -111,6 +111,7 @@ function RunHistoryItem({ run }) {
             {run.user_query}
           </p>
         </div>
+        
 
         <div className="shrink-0 text-right text-xs text-slate-500">
           {formatDuration(run.duration_ms)}

@@ -6,7 +6,10 @@ from backend.services.critic_service import (
     build_reject_result,
 )
 from backend.events import NODE_LOG
+from langsmith import traceable
 
+
+@traceable(name="Critic Node")
 async def critic_node(state: AgentState) -> dict:
     print("🛡️ [Critic Node]: Chief Audit Officer activated.")
 

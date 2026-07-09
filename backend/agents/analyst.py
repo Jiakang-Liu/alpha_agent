@@ -6,7 +6,10 @@ from backend.services.analyst_service import (
     create_financial_report,
 )
 from backend.events import NODE_LOG, REPORT_GENERATED
+from langsmith import traceable
 
+
+@traceable(name="Analyst Agent Node")
 async def analyst_agent_node(state: AgentState) -> dict:
     print("📊 [Analyst Agent Node]: Compiling gathered intelligence into official prospectus report...")
 

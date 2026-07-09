@@ -1,7 +1,9 @@
 from backend.schemas import AgentState
 from backend.events import NODE_LOG
+from langsmith import traceable
 
 
+@traceable(name="Supervisor Node")
 async def supervisor_node(state: AgentState) -> dict:
     has_data = len(state.get("raw_data", []))
     has_report = bool(state.get("financial_report", ""))
