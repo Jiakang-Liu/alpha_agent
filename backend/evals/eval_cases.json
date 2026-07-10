@@ -1,0 +1,52 @@
+[
+  {
+    "id": "eval_001",
+    "ticker": "AAPL",
+    "user_query": "Analyze Apple's financial health and key risks for a long-term investor."
+  },
+  {
+    "id": "eval_002",
+    "ticker": "MSFT",
+    "user_query": "Evaluate Microsoft's business strength, growth drivers, and major risks."
+  },
+  {
+    "id": "eval_003",
+    "ticker": "NVDA",
+    "user_query": "Analyze Nvidia's growth outlook, valuation pressure, and competitive risks."
+  },
+  {
+    "id": "eval_004",
+    "ticker": "TSLA",
+    "user_query": "Summarize Tesla's bullish and bearish investment arguments."
+  },
+  {
+    "id": "eval_005",
+    "ticker": "ORCL",
+    "user_query": "Explain Oracle's current investment case, including cloud growth and valuation risk."
+  },
+  {
+    "id": "eval_006",
+    "ticker": "AMD",
+    "user_query": "Analyze AMD's competitive position and whether its growth story is credible."
+  },
+  {
+    "id": "eval_007",
+    "ticker": "META",
+    "user_query": "Evaluate Meta's core business, AI opportunity, and regulatory risks."
+  },
+  {
+    "id": "eval_008",
+    "ticker": "GOOGL",
+    "user_query": "Analyze Alphabet's search business durability, AI risk, and long-term outlook."
+  },
+  {
+    "id": "eval_009",
+    "ticker": "JPM",
+    "user_query": "Evaluate JPMorgan's financial stability, profitability, and macro risks."
+  },
+  {
+    "id": "eval_010",
+    "ticker": "COST",
+    "user_query": "Analyze Costco's moat, growth quality, and valuation concerns."
+  }
+]
