@@ -30,6 +30,7 @@ class CIKRepository:
             await conn.commit()
 
     async def fetch_sec_ticker_mapping(self) -> list[dict]:
+        print("fetch_sec_ticker_mapping")
         async with httpx.AsyncClient(timeout=20.0) as client:
             response = await client.get(
                 SEC_TICKER_MAPPING_URL,
@@ -48,11 +49,13 @@ class CIKRepository:
                     "company_name": item["title"],
                 }
             )
-
+        print("fetch_sec_ticker_mapping done")
         return records
 
     async def refresh_mapping(self) -> int:
         records = await self.fetch_sec_ticker_mapping()
+
+        print(f"start insert, total records: {len(records)}")
 
         sql = """
         INSERT INTO ticker_cik_mapping (
@@ -71,7 +74,7 @@ class CIKRepository:
 
         async with get_connection() as conn:
             async with conn.cursor() as cur:
-                for record in records:
+                for index, record in enumerate(records, start=1):
                     await cur.execute(
                         sql,
                         (
@@ -80,8 +83,14 @@ class CIKRepository:
                             record["company_name"],
                         ),
                     )
+
+                    if index % 100 == 0:
+                        print(f"inserted {index}/{len(records)}")
+
+            print("committing...")
             await conn.commit()
 
+        print("insert done")
         return len(records)
 
     async def initialize(self) -> None:

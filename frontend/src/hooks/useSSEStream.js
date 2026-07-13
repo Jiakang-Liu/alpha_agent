@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config/api";
 
 export function useSSEStream() {
   const [activeNode, setActiveNode] = useState(null);
@@ -13,7 +14,7 @@ export function useSSEStream() {
     setReport("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/analyze", {
+      const response = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
