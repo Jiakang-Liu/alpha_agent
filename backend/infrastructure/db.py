@@ -4,11 +4,11 @@ from psycopg_pool import AsyncConnectionPool
 
 load_dotenv()
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_USER = os.getenv("DB_USER", "alpha_user")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "alpha_password_2026")
-DB_NAME = os.getenv("DB_DATABASE", "alpha_rag_db")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_DATABASE")
 
 conninfo = (
     f"dbname={DB_NAME} "
