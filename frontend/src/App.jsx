@@ -156,38 +156,56 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#07111f] p-4 text-white">
-      <div className="flex h-full min-h-0 flex-col gap-4">
-        <TopNav
-          activePage={activePage}
-          setActivePage={setActivePage}
-        />
-
-        {activePage === "dashboard" && (
-          <DashboardPage
-            ticker={ticker}
-            query={query}
-            report={report}
-            logs={logs}
-            activeNode={activeNode}
-            completedNodes={completedNodes}
-            runStatus={runStatus}
-            isStreaming={isStreaming}
-            backendStatus={backendStatus}
-            healthData={healthData}
-            setTicker={setTicker}
-            setQuery={setQuery}
-            onSubmit={handleSubmit}
-            onRetryBackend={checkBackendHealth}
+    <div className="h-dvh w-full overflow-hidden bg-[#07111f] text-white">
+      <div
+        className="
+          flex
+          h-full
+          min-h-0
+          min-w-0
+          flex-col
+          gap-[clamp(8px,1vw,16px)]
+          p-[clamp(8px,1vw,16px)]
+        "
+      >
+        <header className="min-w-0 shrink-0">
+          <TopNav
+            activePage={activePage}
+            setActivePage={setActivePage}
           />
-        )}
+        </header>
 
-        {activePage === "history" && (
-          <HistoryPage
-            key={runHistoryVersion}
-            onModifyRun={handleModifyRun}
-          />
-        )}
+        <main className="min-h-0 min-w-0 flex-1 overflow-hidden">
+          {activePage === "dashboard" && (
+            <div className="h-full min-h-0 min-w-0 overflow-hidden">
+              <DashboardPage
+                ticker={ticker}
+                query={query}
+                report={report}
+                logs={logs}
+                activeNode={activeNode}
+                completedNodes={completedNodes}
+                runStatus={runStatus}
+                isStreaming={isStreaming}
+                backendStatus={backendStatus}
+                healthData={healthData}
+                setTicker={setTicker}
+                setQuery={setQuery}
+                onSubmit={handleSubmit}
+                onRetryBackend={checkBackendHealth}
+              />
+            </div>
+          )}
+
+          {activePage === "history" && (
+            <div className="h-full min-h-0 min-w-0 overflow-hidden">
+              <HistoryPage
+                key={runHistoryVersion}
+                onModifyRun={handleModifyRun}
+              />
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );

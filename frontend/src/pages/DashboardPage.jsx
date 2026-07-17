@@ -78,10 +78,33 @@ export default function DashboardPage({
 
   return (
     <>
-      <main className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-[360px_minmax(0,1fr)]">
+      <div
+        className="
+          grid
+          h-full
+          min-h-0
+          min-w-0
+          grid-cols-1
+          gap-[clamp(8px,1vw,16px)]
+          overflow-y-auto
+          overflow-x-hidden
+          xl:grid-cols-[clamp(280px,25vw,380px)_minmax(0,1fr)]
+          xl:overflow-hidden
+        "
+      >
         {/* Left column */}
-        <aside className="flex min-h-0 min-w-0 flex-col gap-4">
-          <div className="shrink-0">
+        <aside
+          className="
+            grid
+            min-h-0
+            min-w-0
+            grid-rows-[auto_minmax(260px,1fr)]
+            gap-[clamp(8px,1vw,16px)]
+            xl:h-full
+            xl:grid-rows-[auto_minmax(0,1fr)]
+          "
+        >
+          <div className="min-w-0">
             <Dashboard
               ticker={ticker}
               query={query}
@@ -94,7 +117,7 @@ export default function DashboardPage({
             />
           </div>
 
-          <div className="min-h-0 flex-1">
+          <div className="min-h-0 min-w-0 overflow-hidden">
             <SystemHealth
               backendStatus={backendStatus}
               healthData={healthData}
@@ -104,8 +127,18 @@ export default function DashboardPage({
         </aside>
 
         {/* Right column */}
-        <section className="flex min-h-0 min-w-0 flex-col gap-4">
-          <div className="shrink-0">
+        <section
+          className="
+            grid
+            min-h-0
+            min-w-0
+            grid-rows-[auto_minmax(420px,1fr)]
+            gap-[clamp(8px,1vw,16px)]
+            xl:h-full
+            xl:grid-rows-[auto_minmax(0,1fr)]
+          "
+        >
+          <div className="min-w-0">
             <ExecutionTrace
               activeNode={activeNode}
               completedNodes={completedNodes}
@@ -115,7 +148,7 @@ export default function DashboardPage({
             />
           </div>
 
-          <div className="min-h-0 flex-1">
+          <div className="min-h-0 min-w-0 overflow-hidden">
             <ReportPreview
               report={report}
               ticker={ticker}
@@ -129,7 +162,7 @@ export default function DashboardPage({
             />
           </div>
         </section>
-      </main>
+      </div>
 
       <ReportModal
         open={isReportOpen}
