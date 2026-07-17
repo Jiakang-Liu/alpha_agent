@@ -1,7 +1,7 @@
 export default function TopNav({ activePage, setActivePage }) {
   const navItems = [
     { key: "dashboard", label: "Dashboard" },
-    { key: "analytics", label: "Analytics" },
+    { key: "history", label: "History" },
   ];
 
   return (
