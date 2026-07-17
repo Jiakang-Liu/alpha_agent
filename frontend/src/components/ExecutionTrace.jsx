@@ -74,7 +74,8 @@ function getAgentState({
 
   if (runStatus === "failed") {
     if (
-      normalizedAgentKey === normalizedActiveNode
+      normalizedAgentKey ===
+      normalizedActiveNode
     ) {
       return "failed";
     }
@@ -84,7 +85,8 @@ function getAgentState({
 
   if (
     runStatus === "running" &&
-    normalizedAgentKey === normalizedActiveNode
+    normalizedAgentKey ===
+      normalizedActiveNode
   ) {
     return "active";
   }
@@ -97,7 +99,8 @@ function getNodeLabel(node) {
     normalizeNodeName(node);
 
   const agent = AGENTS.find(
-    (item) => item.key === normalizedNode,
+    (item) =>
+      item.key === normalizedNode,
   );
 
   if (agent) {
@@ -127,7 +130,11 @@ function getNodeColor(node) {
   );
 }
 
-function normalizeLog(log, index, runStatus) {
+function normalizeLog(
+  log,
+  index,
+  runStatus,
+) {
   if (typeof log === "string") {
     return {
       id: `log-${index}`,
@@ -229,50 +236,33 @@ function AgentStep({
 
   return (
     <div className="flex min-w-0 flex-1 items-start">
-      <div
-        className="
-          flex
-          w-[clamp(72px,8vw,110px)]
-          shrink-0
-          flex-col
-          items-center
-          text-center
-        "
-      >
+      <div className="flex w-24 shrink-0 flex-col items-center text-center">
         <div
           className={[
-            "flex shrink-0 items-center justify-center rounded-full border-2",
-            "h-[clamp(34px,3vw,42px)]",
-            "w-[clamp(34px,3vw,42px)]",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2",
             config.circle,
           ].join(" ")}
         >
           {state === "completed" ? (
             <Check
-              className="h-[clamp(15px,1.3vw,18px)] w-[clamp(15px,1.3vw,18px)]"
+              size={18}
               strokeWidth={2.5}
             />
           ) : state === "active" ? (
             <LoaderCircle
-              className="
-                h-[clamp(15px,1.3vw,18px)]
-                w-[clamp(15px,1.3vw,18px)]
-                animate-spin
-              "
+              size={18}
+              className="animate-spin"
             />
           ) : state === "failed" ? (
-            <CircleAlert className="h-[clamp(15px,1.3vw,18px)] w-[clamp(15px,1.3vw,18px)]" />
+            <CircleAlert size={18} />
           ) : (
-            <AgentIcon className="h-[clamp(14px,1.2vw,17px)] w-[clamp(14px,1.2vw,17px)]" />
+            <AgentIcon size={17} />
           )}
         </div>
 
         <div
           className={[
-            "mt-[clamp(5px,0.6vw,8px)]",
-            "max-w-full truncate",
-            "text-[clamp(11px,0.85vw,14px)]",
-            "font-medium",
+            "mt-2 max-w-full truncate text-sm font-medium",
             config.label,
           ].join(" ")}
         >
@@ -281,9 +271,7 @@ function AgentStep({
 
         <div
           className={[
-            "mt-[clamp(1px,0.2vw,3px)]",
-            "max-w-full truncate",
-            "text-[clamp(9px,0.7vw,12px)]",
+            "mt-0.5 max-w-full truncate text-xs",
             config.description,
           ].join(" ")}
         >
@@ -292,16 +280,7 @@ function AgentStep({
       </div>
 
       {!isLast && (
-        <div
-          className="
-            mt-[clamp(17px,1.5vw,21px)]
-            flex
-            min-w-[clamp(16px,2vw,40px)]
-            flex-1
-            items-center
-            px-[clamp(3px,0.7vw,12px)]
-          "
-        >
+        <div className="mt-5 flex min-w-6 flex-1 items-center px-2">
           <div
             className={[
               "h-px w-full",
@@ -322,11 +301,8 @@ function LogStatus({ status }) {
   if (status === "failed") {
     return (
       <CircleAlert
-        className="
-          h-[clamp(14px,1.15vw,17px)]
-          w-[clamp(14px,1.15vw,17px)]
-          text-rose-400
-        "
+        size={16}
+        className="text-rose-400"
       />
     );
   }
@@ -337,23 +313,16 @@ function LogStatus({ status }) {
   ) {
     return (
       <LoaderCircle
-        className="
-          h-[clamp(14px,1.15vw,17px)]
-          w-[clamp(14px,1.15vw,17px)]
-          animate-spin
-          text-cyan-400
-        "
+        size={16}
+        className="animate-spin text-cyan-400"
       />
     );
   }
 
   return (
     <Check
-      className="
-        h-[clamp(14px,1.15vw,17px)]
-        w-[clamp(14px,1.15vw,17px)]
-        text-emerald-400
-      "
+      size={16}
+      className="text-emerald-400"
     />
   );
 }
@@ -376,53 +345,14 @@ export default function ExecutionTrace({
   );
 
   return (
-    <section
-      className="
-        flex
-        h-full
-        min-h-0
-        min-w-0
-        flex-col
-        overflow-hidden
-        rounded-[clamp(12px,1vw,18px)]
-        border
-        border-slate-800
-        bg-[#0b1627]/90
-        p-[clamp(12px,1.25vw,20px)]
-      "
-    >
-      <div
-        className="
-          flex
-          min-w-0
-          shrink-0
-          items-start
-          justify-between
-          gap-[clamp(8px,1vw,16px)]
-        "
-      >
+    <section className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0b1627]/90 p-4 2xl:p-5">
+      <div className="flex min-w-0 shrink-0 items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <p
-            className="
-              truncate
-              text-[clamp(11px,0.85vw,14px)]
-              font-medium
-              uppercase
-              tracking-[0.08em]
-              text-violet-300
-            "
-          >
+          <p className="truncate text-sm font-medium uppercase tracking-wide text-violet-300">
             Execution Trace
           </p>
 
-          <p
-            className="
-              mt-[clamp(2px,0.3vw,4px)]
-              truncate
-              text-[clamp(10px,0.72vw,12px)]
-              text-slate-500
-            "
-          >
+          <p className="mt-1 truncate text-xs text-slate-500">
             Real-time progress and pipeline events
           </p>
         </div>
@@ -432,30 +362,9 @@ export default function ExecutionTrace({
             <button
               type="button"
               onClick={onClear}
-              className="
-                inline-flex
-                shrink-0
-                items-center
-                gap-[clamp(4px,0.5vw,8px)]
-                rounded-[clamp(7px,0.6vw,10px)]
-                border
-                border-slate-700
-                px-[clamp(8px,0.8vw,12px)]
-                py-[clamp(6px,0.6vw,8px)]
-                text-[clamp(10px,0.72vw,12px)]
-                text-slate-400
-                transition
-                hover:bg-white/5
-                hover:text-white
-              "
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs text-slate-400 transition hover:bg-white/5 hover:text-white"
             >
-              <Trash2
-                className="
-                  h-[clamp(12px,1vw,14px)]
-                  w-[clamp(12px,1vw,14px)]
-                "
-              />
-
+              <Trash2 size={14} />
               <span className="hidden sm:inline">
                 Clear
               </span>
@@ -463,67 +372,32 @@ export default function ExecutionTrace({
           )}
       </div>
 
-      <div
-        className="
-          mt-[clamp(14px,1.5vw,24px)]
-          min-w-0
-          shrink-0
-          overflow-x-auto
-          overflow-y-hidden
-          pb-1
-        "
-      >
+      <div className="mt-4 min-w-0 shrink-0 overflow-x-auto overflow-y-hidden pb-1">
         <div className="flex min-w-[520px] items-start">
-          {AGENTS.map((agent, index) => (
-            <AgentStep
-              key={agent.key}
-              agent={agent}
-              state={getAgentState({
-                agentKey: agent.key,
-                activeNode,
-                completedNodes,
-                runStatus,
-              })}
-              isLast={
-                index ===
-                AGENTS.length - 1
-              }
-            />
-          ))}
+          {AGENTS.map(
+            (agent, index) => (
+              <AgentStep
+                key={agent.key}
+                agent={agent}
+                state={getAgentState({
+                  agentKey: agent.key,
+                  activeNode,
+                  completedNodes,
+                  runStatus,
+                })}
+                isLast={
+                  index ===
+                  AGENTS.length - 1
+                }
+              />
+            ),
+          )}
         </div>
       </div>
 
-      <div
-        className="
-          mt-[clamp(14px,1.5vw,24px)]
-          flex
-          min-h-[clamp(180px,28vh,300px)]
-          min-w-0
-          flex-1
-          flex-col
-          overflow-hidden
-          rounded-[clamp(10px,0.8vw,14px)]
-          border
-          border-slate-800
-          bg-[#08111f]
-        "
-      >
-        <div className="min-w-0 overflow-x-auto">
-          <div
-            className="
-              grid
-              min-w-[620px]
-              grid-cols-[clamp(82px,8vw,110px)_clamp(110px,12vw,160px)_minmax(240px,1fr)_clamp(24px,2.5vw,36px)]
-              gap-[clamp(8px,1vw,16px)]
-              border-b
-              border-slate-800
-              px-[clamp(10px,1vw,16px)]
-              py-[clamp(8px,0.8vw,12px)]
-              text-[clamp(10px,0.72vw,12px)]
-              font-medium
-              text-slate-500
-            "
-          >
+      <div className="mt-4 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl border border-slate-800 bg-[#08111f]">
+        <div className="min-w-0 shrink-0 overflow-x-auto border-b border-slate-800">
+          <div className="grid min-w-[620px] grid-cols-[90px_130px_minmax(240px,1fr)_32px] gap-3 px-4 py-3 text-xs font-medium text-slate-500">
             <div>Time</div>
             <div>Agent</div>
             <div>Message</div>
@@ -531,104 +405,60 @@ export default function ExecutionTrace({
           </div>
         </div>
 
-        <div
-          className="
-            min-h-0
-            min-w-0
-            flex-1
-            overflow-auto
-          "
-        >
+        <div className="min-h-0 min-w-0 flex-1 overflow-auto">
           {normalizedLogs.length === 0 ? (
-            <div
-              className="
-                flex
-                h-full
-                min-h-[clamp(150px,22vh,240px)]
-                items-center
-                justify-center
-                px-[clamp(12px,1.2vw,20px)]
-                text-center
-              "
-            >
+            <div className="flex h-full min-h-[140px] items-center justify-center px-5 text-center">
               <div>
                 <Circle
-                  className="
-                    mx-auto
-                    h-[clamp(20px,1.8vw,25px)]
-                    w-[clamp(20px,1.8vw,25px)]
-                    text-slate-700
-                  "
+                  size={24}
+                  className="mx-auto text-slate-700"
                 />
 
-                <p
-                  className="
-                    mt-[clamp(7px,0.8vw,12px)]
-                    text-[clamp(11px,0.85vw,14px)]
-                    text-slate-500
-                  "
-                >
+                <p className="mt-3 text-sm text-slate-500">
                   Waiting for pipeline events...
                 </p>
               </div>
             </div>
           ) : (
             <div className="min-w-[620px]">
-              {normalizedLogs.map((log) => (
-                <div
-                  key={log.id}
-                  className="
-                    grid
-                    min-h-[clamp(44px,5.5vh,56px)]
-                    grid-cols-[clamp(82px,8vw,110px)_clamp(110px,12vw,160px)_minmax(240px,1fr)_clamp(24px,2.5vw,36px)]
-                    items-center
-                    gap-[clamp(8px,1vw,16px)]
-                    border-b
-                    border-slate-800/70
-                    px-[clamp(10px,1vw,16px)]
-                    last:border-b-0
-                  "
-                >
+              {normalizedLogs.map(
+                (log) => (
                   <div
-                    className="
-                      truncate
-                      font-mono
-                      text-[clamp(10px,0.72vw,12px)]
-                      text-slate-500
-                    "
+                    key={log.id}
+                    className="grid min-h-12 grid-cols-[90px_130px_minmax(240px,1fr)_32px] items-center gap-3 border-b border-slate-800/70 px-4 last:border-b-0"
                   >
-                    {log.timestamp}
-                  </div>
+                    <div className="truncate font-mono text-xs text-slate-500">
+                      {log.timestamp}
+                    </div>
 
-                  <div
-                    className={[
-                      "truncate font-semibold",
-                      "text-[clamp(10px,0.72vw,12px)]",
-                      getNodeColor(log.node),
-                    ].join(" ")}
-                  >
-                    {getNodeLabel(log.node)}
-                  </div>
+                    <div
+                      className={[
+                        "truncate text-xs font-semibold",
+                        getNodeColor(
+                          log.node,
+                        ),
+                      ].join(" ")}
+                    >
+                      {getNodeLabel(
+                        log.node,
+                      )}
+                    </div>
 
-                  <div
-                    className="
-                      truncate
-                      font-mono
-                      text-[clamp(10px,0.72vw,12px)]
-                      text-slate-300
-                    "
-                    title={log.message}
-                  >
-                    {log.message}
-                  </div>
+                    <div
+                      className="truncate font-mono text-xs text-slate-300"
+                      title={log.message}
+                    >
+                      {log.message}
+                    </div>
 
-                  <div className="flex justify-center">
-                    <LogStatus
-                      status={log.status}
-                    />
+                    <div className="flex justify-center">
+                      <LogStatus
+                        status={log.status}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           )}
         </div>

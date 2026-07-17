@@ -22,7 +22,8 @@ export default function DashboardPage({
   onSubmit,
   onRetryBackend,
 }) {
-  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] =
+    useState(false);
 
   async function handleCopyReport() {
     if (!report?.trim()) {
@@ -32,7 +33,10 @@ export default function DashboardPage({
     try {
       await navigator.clipboard.writeText(report);
     } catch (error) {
-      console.error("Failed to copy report:", error);
+      console.error(
+        "Failed to copy report:",
+        error,
+      );
     }
   }
 
@@ -41,9 +45,14 @@ export default function DashboardPage({
       return;
     }
 
-    const safeTicker = ticker?.trim() || "report";
+    const safeTicker =
+      ticker?.trim() || "report";
+
     const generatedDate = new Date();
-    const fileDate = generatedDate.toISOString().slice(0, 10);
+
+    const fileDate = generatedDate
+      .toISOString()
+      .slice(0, 10);
 
     const content = [
       `# Financial Analysis — ${safeTicker}`,
@@ -60,8 +69,11 @@ export default function DashboardPage({
       type: "text/markdown;charset=utf-8",
     });
 
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
+    const url =
+      URL.createObjectURL(blob);
+
+    const anchor =
+      document.createElement("a");
 
     anchor.href = url;
     anchor.download = `${safeTicker}_${fileDate}_report.md`;
@@ -74,7 +86,9 @@ export default function DashboardPage({
   }
 
   const reportStatus =
-    runStatus === "failed" ? "failed" : "success";
+    runStatus === "failed"
+      ? "failed"
+      : "success";
 
   return (
     <>
@@ -85,10 +99,11 @@ export default function DashboardPage({
           min-h-0
           min-w-0
           grid-cols-1
-          gap-[clamp(8px,1vw,16px)]
+          gap-3
           overflow-y-auto
           overflow-x-hidden
-          xl:grid-cols-[clamp(280px,25vw,380px)_minmax(0,1fr)]
+          xl:grid-cols-[clamp(300px,22vw,350px)_minmax(0,1fr)]
+          xl:gap-4
           xl:overflow-hidden
         "
       >
@@ -98,10 +113,11 @@ export default function DashboardPage({
             grid
             min-h-0
             min-w-0
-            grid-rows-[auto_minmax(260px,1fr)]
-            gap-[clamp(8px,1vw,16px)]
+            grid-rows-[auto_auto]
+            gap-3
             xl:h-full
             xl:grid-rows-[auto_minmax(0,1fr)]
+            xl:gap-4
           "
         >
           <div className="min-w-0">
@@ -117,7 +133,14 @@ export default function DashboardPage({
             />
           </div>
 
-          <div className="min-h-0 min-w-0 overflow-hidden">
+          <div
+            className="
+              min-h-[260px]
+              min-w-0
+              overflow-hidden
+              xl:min-h-0
+            "
+          >
             <SystemHealth
               backendStatus={backendStatus}
               healthData={healthData}
@@ -132,13 +155,21 @@ export default function DashboardPage({
             grid
             min-h-0
             min-w-0
-            grid-rows-[auto_minmax(420px,1fr)]
-            gap-[clamp(8px,1vw,16px)]
+            grid-rows-[auto_auto]
+            gap-3
             xl:h-full
-            xl:grid-rows-[auto_minmax(0,1fr)]
+            xl:grid-rows-[minmax(0,1.12fr)_minmax(0,0.88fr)]
+            xl:gap-4
           "
         >
-          <div className="min-w-0">
+          <div
+            className="
+              min-h-[360px]
+              min-w-0
+              overflow-hidden
+              xl:min-h-0
+            "
+          >
             <ExecutionTrace
               activeNode={activeNode}
               completedNodes={completedNodes}
@@ -148,7 +179,14 @@ export default function DashboardPage({
             />
           </div>
 
-          <div className="min-h-0 min-w-0 overflow-hidden">
+          <div
+            className="
+              min-h-[360px]
+              min-w-0
+              overflow-hidden
+              xl:min-h-0
+            "
+          >
             <ReportPreview
               report={report}
               ticker={ticker}
@@ -156,7 +194,9 @@ export default function DashboardPage({
               generatedAt="--"
               status={reportStatus}
               isStreaming={isStreaming}
-              onOpen={() => setIsReportOpen(true)}
+              onOpen={() =>
+                setIsReportOpen(true)
+              }
               onCopy={handleCopyReport}
               onExport={handleExportReport}
             />
@@ -166,7 +206,9 @@ export default function DashboardPage({
 
       <ReportModal
         open={isReportOpen}
-        onClose={() => setIsReportOpen(false)}
+        onClose={() =>
+          setIsReportOpen(false)
+        }
         report={report}
         ticker={ticker}
         runId="--"

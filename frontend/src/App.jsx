@@ -27,10 +27,13 @@ export default function App() {
   const [backendStatus, setBackendStatus] =
     useState("checking");
 
-  const [healthData, setHealthData] = useState(null);
+  const [healthData, setHealthData] =
+    useState(null);
 
-  const [runHistoryVersion, setRunHistoryVersion] =
-    useState(0);
+  const [
+    runHistoryVersion,
+    setRunHistoryVersion,
+  ] = useState(0);
 
   const wasStreamingRef = useRef(false);
 
@@ -44,56 +47,57 @@ export default function App() {
     triggerAnalysis,
   } = useSSEStream();
 
-  const checkBackendHealth = useCallback(async () => {
-    setBackendStatus("checking");
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/health`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        },
-      );
-
-      let data = null;
+  const checkBackendHealth =
+    useCallback(async () => {
+      setBackendStatus("checking");
 
       try {
-        data = await response.json();
-      } catch {
-        data = null;
-      }
+        const response = await fetch(
+          `${API_BASE_URL}/api/health`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+            },
+          },
+        );
 
-      console.log(
-        "[HEALTH] response:",
-        response.status,
-        data,
-      );
+        let data = null;
 
-      if (
-        response.ok &&
-        data?.status === "healthy" &&
-        data?.backend?.status === "ready"
-      ) {
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
+
+        console.log(
+          "[HEALTH] response:",
+          response.status,
+          data,
+        );
+
+        if (
+          response.ok &&
+          data?.status === "healthy" &&
+          data?.backend?.status === "ready"
+        ) {
+          setHealthData(data);
+          setBackendStatus("ready");
+          return;
+        }
+
         setHealthData(data);
-        setBackendStatus("ready");
-        return;
+        setBackendStatus("unavailable");
+      } catch (error) {
+        console.error(
+          "[HEALTH] request failed:",
+          error,
+        );
+
+        setHealthData(null);
+        setBackendStatus("unavailable");
       }
-
-      setHealthData(data);
-      setBackendStatus("unavailable");
-    } catch (error) {
-      console.error(
-        "[HEALTH] request failed:",
-        error,
-      );
-
-      setHealthData(null);
-      setBackendStatus("unavailable");
-    }
-  }, []);
+    }, []);
 
   useEffect(() => {
     checkBackendHealth();
@@ -112,11 +116,15 @@ export default function App() {
     wasStreamingRef.current = false;
 
     setRunHistoryVersion(
-      (currentVersion) => currentVersion + 1,
+      (currentVersion) =>
+        currentVersion + 1,
     );
 
     checkBackendHealth();
-  }, [isStreaming, checkBackendHealth]);
+  }, [
+    isStreaming,
+    checkBackendHealth,
+  ]);
 
   useEffect(() => {
     console.log(
@@ -128,8 +136,11 @@ export default function App() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    const normalizedTicker = ticker.trim();
-    const normalizedQuery = query.trim();
+    const normalizedTicker =
+      ticker.trim();
+
+    const normalizedQuery =
+      query.trim();
 
     if (
       !normalizedTicker ||
@@ -157,17 +168,7 @@ export default function App() {
 
   return (
     <div className="h-dvh w-full overflow-hidden bg-[#07111f] text-white">
-      <div
-        className="
-          flex
-          h-full
-          min-h-0
-          min-w-0
-          flex-col
-          gap-[clamp(8px,1vw,16px)]
-          p-[clamp(8px,1vw,16px)]
-        "
-      >
+      <div className="flex h-full min-h-0 min-w-0 flex-col gap-2 p-2 sm:gap-3 sm:p-3 xl:gap-4 xl:p-4">
         <header className="min-w-0 shrink-0">
           <TopNav
             activePage={activePage}
@@ -176,7 +177,8 @@ export default function App() {
         </header>
 
         <main className="min-h-0 min-w-0 flex-1 overflow-hidden">
-          {activePage === "dashboard" && (
+          {activePage ===
+            "dashboard" && (
             <div className="h-full min-h-0 min-w-0 overflow-hidden">
               <DashboardPage
                 ticker={ticker}
@@ -184,15 +186,21 @@ export default function App() {
                 report={report}
                 logs={logs}
                 activeNode={activeNode}
-                completedNodes={completedNodes}
+                completedNodes={
+                  completedNodes
+                }
                 runStatus={runStatus}
                 isStreaming={isStreaming}
-                backendStatus={backendStatus}
+                backendStatus={
+                  backendStatus
+                }
                 healthData={healthData}
                 setTicker={setTicker}
                 setQuery={setQuery}
                 onSubmit={handleSubmit}
-                onRetryBackend={checkBackendHealth}
+                onRetryBackend={
+                  checkBackendHealth
+                }
               />
             </div>
           )}
@@ -201,7 +209,9 @@ export default function App() {
             <div className="h-full min-h-0 min-w-0 overflow-hidden">
               <HistoryPage
                 key={runHistoryVersion}
-                onModifyRun={handleModifyRun}
+                onModifyRun={
+                  handleModifyRun
+                }
               />
             </div>
           )}

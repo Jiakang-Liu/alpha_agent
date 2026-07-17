@@ -57,12 +57,7 @@ function BackendStatus({ status }) {
   return (
     <div
       className={[
-        "flex min-w-0 items-start",
-        "gap-[clamp(8px,0.8vw,12px)]",
-        "rounded-[clamp(10px,0.8vw,14px)]",
-        "border",
-        "px-[clamp(10px,1vw,16px)]",
-        "py-[clamp(9px,0.8vw,12px)]",
+        "flex min-w-0 items-start gap-3 rounded-xl border px-4 py-3",
         config.containerClassName,
       ].join(" ")}
       aria-live="polite"
@@ -76,11 +71,11 @@ function BackendStatus({ status }) {
       />
 
       <div className="min-w-0 flex-1">
-        <div className="truncate text-[clamp(12px,0.85vw,14px)] font-medium text-slate-200">
+        <div className="truncate text-sm font-medium text-slate-200">
           {config.title}
         </div>
 
-        <div className="mt-0.5 break-words text-[clamp(10px,0.72vw,12px)] leading-relaxed text-slate-500">
+        <div className="mt-0.5 break-words text-xs leading-relaxed text-slate-500">
           {config.description}
         </div>
       </div>
@@ -149,6 +144,7 @@ export default function Dashboard({
             size={16}
             className="shrink-0 animate-spin"
           />
+
           <span className="truncate">
             ANALYSIS IN PROGRESS...
           </span>
@@ -163,6 +159,7 @@ export default function Dashboard({
             size={16}
             className="shrink-0 animate-spin"
           />
+
           <span className="truncate">
             WAKING BACKEND...
           </span>
@@ -177,6 +174,7 @@ export default function Dashboard({
             size={16}
             className="shrink-0"
           />
+
           <span className="truncate">
             RETRY CONNECTION
           </span>
@@ -191,6 +189,7 @@ export default function Dashboard({
           fill="currentColor"
           className="shrink-0"
         />
+
         <span className="truncate">
           START ANALYSIS
         </span>
@@ -199,49 +198,19 @@ export default function Dashboard({
   }
 
   return (
-    <section
-      className="
-        w-full
-        min-w-0
-        overflow-hidden
-        rounded-[clamp(12px,1vw,18px)]
-        border
-        border-slate-800
-        bg-[#0b1627]/90
-        p-[clamp(12px,1.25vw,20px)]
-      "
-    >
-      <p
-        className="
-          mb-[clamp(12px,1.2vw,20px)]
-          text-[clamp(11px,0.85vw,14px)]
-          font-medium
-          uppercase
-          tracking-[0.08em]
-          text-violet-300
-        "
-      >
+    <section className="w-full min-w-0 overflow-hidden rounded-2xl border border-slate-800 bg-[#0b1627]/90 p-4 2xl:p-5">
+      <p className="mb-4 text-sm font-medium uppercase tracking-wide text-violet-300">
         Input & Control
       </p>
 
       <form
         onSubmit={handleFormSubmit}
-        className="
-          flex
-          min-w-0
-          flex-col
-          gap-[clamp(12px,1.2vw,20px)]
-        "
+        className="flex min-w-0 flex-col gap-4"
       >
         <div className="min-w-0">
           <label
             htmlFor="stock-ticker"
-            className="
-              mb-[clamp(5px,0.5vw,8px)]
-              block
-              text-[clamp(12px,0.85vw,14px)]
-              text-slate-200
-            "
+            className="mb-2 block text-sm text-slate-200"
           >
             Stock Ticker
           </label>
@@ -256,36 +225,14 @@ export default function Dashboard({
             autoComplete="off"
             spellCheck={false}
             placeholder="Enter a stock ticker"
-            className="
-              w-full
-              min-w-0
-              rounded-[clamp(8px,0.7vw,12px)]
-              border
-              border-slate-700
-              bg-[#08111f]
-              px-[clamp(10px,1vw,16px)]
-              py-[clamp(9px,0.8vw,12px)]
-              text-[clamp(12px,0.85vw,14px)]
-              text-white
-              outline-none
-              transition
-              placeholder:text-slate-500
-              focus:border-violet-500
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className="h-11 w-full min-w-0 rounded-lg border border-slate-700 bg-[#08111f] px-4 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
         <div className="min-w-0">
           <label
             htmlFor="analysis-query"
-            className="
-              mb-[clamp(5px,0.5vw,8px)]
-              block
-              text-[clamp(12px,0.85vw,14px)]
-              text-slate-200
-            "
+            className="mb-2 block text-sm text-slate-200"
           >
             User Query
           </label>
@@ -298,27 +245,7 @@ export default function Dashboard({
             }
             disabled={isStreaming}
             placeholder="Describe what you want to analyze"
-            className="
-              h-[clamp(88px,12vh,112px)]
-              w-full
-              min-w-0
-              resize-none
-              rounded-[clamp(8px,0.7vw,12px)]
-              border
-              border-slate-700
-              bg-[#08111f]
-              px-[clamp(10px,1vw,16px)]
-              py-[clamp(9px,0.8vw,12px)]
-              text-[clamp(12px,0.85vw,14px)]
-              leading-relaxed
-              text-white
-              outline-none
-              transition
-              placeholder:text-slate-500
-              focus:border-violet-500
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className="h-24 w-full min-w-0 resize-none rounded-lg border border-slate-700 bg-[#08111f] px-4 py-3 text-sm leading-relaxed text-white outline-none transition placeholder:text-slate-500 focus:border-violet-500 disabled:cursor-not-allowed disabled:opacity-60 2xl:h-28"
           />
         </div>
 
@@ -329,29 +256,7 @@ export default function Dashboard({
               ? false
               : isSubmitDisabled
           }
-          className="
-            flex
-            min-w-0
-            w-full
-            items-center
-            justify-center
-            gap-[clamp(6px,0.6vw,8px)]
-            overflow-hidden
-            rounded-[clamp(8px,0.7vw,12px)]
-            bg-gradient-to-r
-            from-violet-600
-            to-purple-600
-            px-[clamp(10px,1vw,16px)]
-            py-[clamp(9px,0.8vw,12px)]
-            text-[clamp(11px,0.8vw,14px)]
-            font-semibold
-            text-white
-            transition
-            hover:from-violet-500
-            hover:to-purple-500
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-          "
+          className="flex h-11 w-full min-w-0 items-center justify-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-4 text-sm font-semibold text-white transition hover:from-violet-500 hover:to-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {renderButtonContent()}
         </button>

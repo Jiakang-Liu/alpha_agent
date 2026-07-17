@@ -79,71 +79,38 @@ function HealthItem({
   const StatusIcon = style.icon;
 
   return (
-    <div
-      className="
-        flex
-        min-w-0
-        items-center
-        gap-[clamp(8px,0.8vw,12px)]
-        rounded-[clamp(10px,0.8vw,14px)]
-        border
-        border-slate-800
-        bg-[#08111f]
-        px-[clamp(10px,1vw,16px)]
-        py-[clamp(9px,0.8vw,12px)]
-      "
-    >
-      <div
-        className="
-          flex
-          h-[clamp(30px,2.5vw,36px)]
-          w-[clamp(30px,2.5vw,36px)]
-          shrink-0
-          items-center
-          justify-center
-          rounded-[clamp(7px,0.6vw,10px)]
-          bg-[#111d31]
-          text-slate-400
-        "
-      >
-        <ItemIcon
-          size={18}
-          className="h-[clamp(15px,1.2vw,18px)] w-[clamp(15px,1.2vw,18px)]"
-        />
+    <div className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-800 bg-[#08111f] px-3 py-2.5 2xl:px-4 2xl:py-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#111d31] text-slate-400">
+        <ItemIcon size={17} />
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="flex min-w-0 items-center justify-between gap-[clamp(6px,0.7vw,12px)]">
-          <span className="min-w-0 truncate text-[clamp(12px,0.85vw,14px)] font-medium text-slate-100">
+        <div className="flex min-w-0 items-center justify-between gap-2">
+          <span className="min-w-0 truncate text-sm font-medium text-slate-100">
             {name}
           </span>
 
           <span
             className={[
-              "flex shrink-0 items-center",
-              "gap-[clamp(4px,0.4vw,8px)]",
-              "text-[clamp(10px,0.72vw,12px)]",
-              "font-medium",
+              "flex shrink-0 items-center gap-1.5 text-xs font-medium",
               style.labelClassName,
             ].join(" ")}
           >
             <span
               className={[
-                "h-[clamp(5px,0.4vw,6px)]",
-                "w-[clamp(5px,0.4vw,6px)]",
-                "shrink-0 rounded-full",
+                "h-1.5 w-1.5 shrink-0 rounded-full",
                 style.dotClassName,
               ].join(" ")}
             />
 
-            <span className="max-w-[clamp(70px,7vw,110px)] truncate">
+            <span className="max-w-24 truncate">
               {label}
             </span>
           </span>
         </div>
 
         {description && (
-          <p className="mt-[clamp(2px,0.25vw,4px)] truncate text-[clamp(10px,0.72vw,12px)] text-slate-500">
+          <p className="mt-0.5 truncate text-xs text-slate-500">
             {description}
           </p>
         )}
@@ -152,8 +119,6 @@ function HealthItem({
       <StatusIcon
         size={16}
         className={[
-          "h-[clamp(14px,1.1vw,16px)]",
-          "w-[clamp(14px,1.1vw,16px)]",
           "shrink-0",
           style.iconClassName,
         ].join(" ")}
@@ -223,50 +188,34 @@ export default function SystemHealth({
   ];
 
   return (
-    <section
-      className="
-        flex
-        h-full
-        min-h-0
-        min-w-0
-        flex-col
-        overflow-hidden
-        rounded-[clamp(12px,1vw,18px)]
-        border
-        border-slate-800
-        bg-[#0b1627]/90
-        p-[clamp(12px,1.25vw,20px)]
-      "
-    >
-      <div className="flex min-w-0 shrink-0 items-start justify-between gap-[clamp(8px,1vw,16px)]">
+    <section className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-[#0b1627]/90 p-4 2xl:p-5">
+      <div className="flex min-w-0 shrink-0 items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[clamp(11px,0.85vw,14px)] font-medium uppercase tracking-[0.08em] text-violet-300">
+          <p className="truncate text-sm font-medium uppercase tracking-wide text-violet-300">
             System Health
           </p>
 
-          <div className="mt-[clamp(5px,0.5vw,8px)] flex min-w-0 items-center gap-[clamp(5px,0.5vw,8px)]">
+          <div className="mt-2 flex min-w-0 items-center gap-2">
             {overallIsChecking ? (
               <LoaderCircle
                 size={16}
-                className="h-[clamp(14px,1.1vw,16px)] w-[clamp(14px,1.1vw,16px)] shrink-0 animate-spin text-cyan-400"
+                className="shrink-0 animate-spin text-cyan-400"
               />
             ) : overallIsHealthy ? (
               <Activity
                 size={16}
-                className="h-[clamp(14px,1.1vw,16px)] w-[clamp(14px,1.1vw,16px)] shrink-0 text-cyan-400"
+                className="shrink-0 text-cyan-400"
               />
             ) : (
               <CircleAlert
                 size={16}
-                className="h-[clamp(14px,1.1vw,16px)] w-[clamp(14px,1.1vw,16px)] shrink-0 text-rose-400"
+                className="shrink-0 text-rose-400"
               />
             )}
 
             <span
               className={[
-                "min-w-0 truncate",
-                "text-[clamp(10px,0.72vw,12px)]",
-                "font-medium",
+                "min-w-0 truncate text-xs font-medium",
                 overallIsChecking
                   ? "text-cyan-300"
                   : overallIsHealthy
@@ -289,49 +238,20 @@ export default function SystemHealth({
           disabled={isChecking}
           aria-label="Refresh system health"
           title="Refresh system health"
-          className="
-            flex
-            h-[clamp(30px,2.5vw,36px)]
-            w-[clamp(30px,2.5vw,36px)]
-            shrink-0
-            items-center
-            justify-center
-            rounded-[clamp(7px,0.6vw,10px)]
-            border
-            border-slate-700
-            text-slate-400
-            transition
-            hover:border-cyan-400/30
-            hover:bg-cyan-400/5
-            hover:text-cyan-300
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-          "
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-700 text-slate-400 transition hover:border-cyan-400/30 hover:bg-cyan-400/5 hover:text-cyan-300 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <RefreshCw
             size={16}
-            className={[
-              "h-[clamp(14px,1.1vw,16px)]",
-              "w-[clamp(14px,1.1vw,16px)]",
-              isChecking ? "animate-spin" : "",
-            ].join(" ")}
+            className={
+              isChecking
+                ? "animate-spin"
+                : ""
+            }
           />
         </button>
       </div>
 
-      <div
-        className="
-          mt-[clamp(12px,1.2vw,20px)]
-          flex
-          min-h-0
-          flex-1
-          flex-col
-          gap-[clamp(8px,0.8vw,12px)]
-          overflow-y-auto
-          overflow-x-hidden
-          pr-1
-        "
-      >
+      <div className="mt-4 flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overflow-x-hidden pr-1">
         {healthItems.map((item) => (
           <HealthItem
             key={item.name}
@@ -344,26 +264,15 @@ export default function SystemHealth({
         ))}
       </div>
 
-      <div
-        className="
-          mt-[clamp(10px,1vw,16px)]
-          flex
-          min-w-0
-          shrink-0
-          items-center
-          justify-between
-          gap-[clamp(8px,0.8vw,12px)]
-          border-t
-          border-slate-800
-          pt-[clamp(9px,0.8vw,14px)]
-        "
-      >
-        <span className="shrink-0 text-[clamp(10px,0.72vw,12px)] text-slate-500">
+      <div className="mt-3 flex min-w-0 shrink-0 items-center justify-between gap-3 border-t border-slate-800 pt-3">
+        <span className="shrink-0 text-xs text-slate-500">
           Last checked
         </span>
 
-        <span className="min-w-0 truncate text-right text-[clamp(10px,0.72vw,12px)] text-slate-400">
-          {formatCheckedTime(healthData?.checked_at)}
+        <span className="min-w-0 truncate text-right text-xs text-slate-400">
+          {formatCheckedTime(
+            healthData?.checked_at,
+          )}
         </span>
       </div>
     </section>
