@@ -14,24 +14,37 @@ async def critic_node(state: AgentState) -> dict:
     print("🛡️ [Critic Node]: Chief Audit Officer activated.")
 
     report = state.get("financial_report", "")
+    critique_count = state.get("critique_count", 0)
+    ticker = state.get("ticker", "")
+
+    data_quality = state.get("data_quality", {})
+    data_limitations = state.get("data_limitations", [])
+
     print(
         "[Critic DEBUG]: financial_report exists =",
-        bool(report)
+        bool(report),
     )
 
     print(
         "[Critic DEBUG]: financial_report length =",
-        len(report)
+        len(report),
     )
 
     print(
         "[Critic DEBUG]: financial_report preview =",
-        repr(report[:300])
+        repr(report[:300]),
     )
-    critique_count = state.get("critique_count", 0)
-    ticker = state.get("ticker","")
 
-    system_prompt = build_audit_prompt(ticker)
+    print(
+        "[Critic DEBUG]: data_quality =",
+        data_quality,
+    )
+
+    system_prompt = build_audit_prompt(
+        ticker=ticker,
+        data_quality=data_quality,
+        data_limitations=data_limitations,
+    )
 
     try:
         audit_result = await run_audit(
@@ -54,9 +67,11 @@ async def critic_node(state: AgentState) -> dict:
             "events": [
                 {
                     "type": NODE_LOG,
-                    "message": f"Audit rejected: {audit_result.feedback}"
+                    "message": (
+                        f"Audit rejected: {audit_result.feedback}"
+                    ),
                 }
-            ]
+            ],
         }
 
     except Exception as e:

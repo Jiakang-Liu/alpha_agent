@@ -16,9 +16,17 @@ def extract_data_request(state: AgentState) -> tuple[str, str]:
 def build_data_error(message: str) -> dict:
     return {
         "raw_data": [],
+        "data_quality": {
+            "income_statement": "unknown",
+            "balance_sheet": "unknown",
+            "cash_flow_statement": "unknown",
+        },
+        "missing_data": [],
+        "data_limitations": [
+            f"Financial data retrieval failed: {message}"
+        ],
         "critique": f"Data agent failed: {message}",
     }
-
 
 async def ensure_ticker_data_cached( ticker: str) -> None:
     print(f"--[Data Agent]: Ensure ticker data cached")
