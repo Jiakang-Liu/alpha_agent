@@ -37,8 +37,7 @@ def build_analyst_system_prompt(
     )
 
     return (
-        "You are a Senior Wall Street Research Analyst specializing in "
-        "private aerospace secondary markets.\n"
+        "You are a senior equity research analyst capable of analyzing companies across industries.\n"
         "Your task is to produce a professional, evidence-based financial report.\n\n"
 
         "STRICT GROUNDING RULES:\n"

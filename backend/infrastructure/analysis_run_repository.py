@@ -132,6 +132,7 @@ class AnalysisRunRepository:
                 user_query,
                 status,
                 current_node,
+                final_report,
                 error_message,
                 started_at,
                 finished_at,
@@ -155,26 +156,27 @@ class AnalysisRunRepository:
                 "user_query": row[2],
                 "status": row[3],
                 "current_node": row[4],
-                "error_message": row[5],
+                "final_report": row[5],
+                "error_message": row[6],
                 "started_at": (
-                    row[6].isoformat()
-                    if row[6]
-                    else None
-                ),
-                "finished_at": (
                     row[7].isoformat()
                     if row[7]
                     else None
                 ),
-                "duration_ms": row[8],
+                "finished_at": (
+                    row[8].isoformat()
+                    if row[8]
+                    else None
+                ),
+                "duration_ms": row[9],
                 "created_at": (
-                    row[9].isoformat()
-                    if row[9]
+                    row[10].isoformat()
+                    if row[10]
                     else None
                 ),
                 "updated_at": (
-                    row[10].isoformat()
-                    if row[10]
+                    row[11].isoformat()
+                    if row[11]
                     else None
                 ),
             }
