@@ -18,10 +18,10 @@ export default function App() {
   const [activePage, setActivePage] =
     useState("dashboard");
 
-  const [ticker, setTicker] = useState("TSLA");
+  const [ticker, setTicker] = useState("");
 
   const [query, setQuery] = useState(
-    "Analyze 2026 Free Cash Flow (FCF) trend",
+    "",
   );
 
   const [backendStatus, setBackendStatus] =
